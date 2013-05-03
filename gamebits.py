@@ -15,7 +15,10 @@ import sys, re
 # Get URL if none supplied
 if "http" in sys.argv[1]:
     game_page = sys.argv[1]
+    game_name = ""
 else:
+    game_name = sys.argv[1]
+    
     # Remove spaces and lowercase console name
     console = ''.join(sys.argv[2].split()).lower()
 
@@ -52,6 +55,7 @@ else:
     review = "No IGN review found"
 
 # Print everything
+print "Game Name: " + game_name
 print "Released: " + date
 print "Source: " + source
 print "Language: " + language
