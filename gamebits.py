@@ -76,7 +76,11 @@ print "Description: "
 print "[quote]"
 description_paras = gameinfo.find_all("p")
 for i, para in enumerate(description_paras):
-    print list(para.stripped_strings)[0]
-    if i != len(description_paras)-1:
-        print ""
+    if len(list(para.stripped_strings)) > 0:
+        print list(para.stripped_strings)[0]
+        if i != len(description_paras)-1:
+            print ""
+    else:
+        print "No description available"
+        break
 print "[/quote]"
