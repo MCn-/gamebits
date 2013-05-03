@@ -68,7 +68,3 @@ for i, para in enumerate(description_paras):
     if i != len(description_paras)-1:
         print ""
 print "[/quote]"
-
-
-
-
