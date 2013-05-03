@@ -52,7 +52,7 @@ else:
     review = "No IGN review found"
 
 # Print everything
-print "Game Name: " + game_name
+print "Game Name: " + sys.argv[1]
 print "Released: " + date
 print "Source: " + source
 print "Language: " + language
