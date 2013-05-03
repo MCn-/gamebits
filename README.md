@@ -20,5 +20,5 @@ or
 
     ./gamebits.py <IGN URL> <CONSOLE> <SOURCE> <LANGUAGE>
     
-Note: <CONSOLE> should be equal to the one used on IGN, which usually will be fairly similar to what you would expect, but in some cases may be different. For example, the Nintendo 64 has an id of n64, and the Gamecube has an id of gc.
+Note: CONSOLE should be equal to the one used on IGN, which usually will be fairly similar to what you would expect, but in some cases may be different. For example, the Nintendo 64 has an id of n64, and the Gamecube has an id of gc.
     
