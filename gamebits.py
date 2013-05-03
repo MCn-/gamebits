@@ -18,18 +18,26 @@ if "http" in sys.argv[1]:
     game_name = ""
 else:
     game_name = sys.argv[1]
-    
+
     # Remove spaces and lowercase console name
-    console = ''.join(sys.argv[2].split()).lower()
+    console = '-'.join(sys.argv[2].split()).lower()
 
     # Search IGN for games
     search_url = "http://ign.com/search?q=" + sys.argv[1] + "&page=0&count=10&type=object&objectType=game&filter=games"
     search_soup = BeautifulSoup(requests.get(search_url).text)
 
-    # Find the first page which has the console slug in the URL
-    # TODO: make more robust by checking game name somewhere here too
-    search_items = search_soup.find("div", class_="search-item")
-    game_page = search_items.find("a", href=re.compile(console)).get("href")
+    # Find the page for the game
+    search_items = search_soup.find_all("div", class_="search-item-title")
+    for item in search_items:
+        if item.a and item.a.em:
+            item.a.em.unwrap()
+        if sys.argv[1] == item.a.text.strip():
+            the_tag = item
+
+    if console in the_tag.a.get("href"):
+        game_page = the_tag.a.get("href")
+    else:
+        game_page = the_tag.parent.find(class_="search-item-sub-title").find("a", href=re.compile(console)).get("href")
 
 # Open URL
 soup = BeautifulSoup(requests.get(game_page).text)
