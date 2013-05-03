@@ -28,12 +28,22 @@ else:
 
     # Find the page for the game
     search_items = search_soup.find_all("div", class_="search-item-title")
+    the_tag = None
+    found_names = []
     for item in search_items:
         if item.a and item.a.em:
             item.a.em.unwrap()
+
+        found_names.append(item.a.text.strip());
         if sys.argv[1] == item.a.text.strip():
             the_tag = item
 
+    if not the_tag:
+        print "Error: No game by the name " + sys.argv[1] + " was found in the IGN search results: either try adjusting the name or use the direct URL instead.\n"
+        print "The following games were found on the search results page: "
+        for name in found_names:
+            print " - " + name
+        sys.exit()
     if console in the_tag.a.get("href"):
         game_page = the_tag.a.get("href")
     else:
