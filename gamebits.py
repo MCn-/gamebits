@@ -105,51 +105,42 @@ print "[/quote]"
 print ""
 
 # Emulator Suggestion
+print "Emulation:"
 if sys.argv[2] == "PS":
-	print "Emulation:"
 	print "[quote]The best Emulator to use is EPSXE."
 	print "http://www.epsxe.com/download.php[/quote]"
 elif sys.argv[2] == "PS2":
-	print "Emulation:"
 	print "[quote]The best Emulator to use is PCSX2."
 	print "http://pcsx2.net/download.html[/quote]"
 elif sys.argv[2] == "NES":
-	print "Emulation:"
 	print "[quote]The best Emulator to use is FCEUX."
 	print "http://www.fceux.com/web/home.html[/quote]"
 elif sys.argv[2] == "SNES":
-	print "Emulation:"
 	print "[quote]The best Emulator to use is ZSNES."
 	print "http://www.zsnes.com/index.php?page=files[/quote]"
 elif sys.argv[2] == "N64":
-	print "Emulation:"
 	print "[quote]The best Emulator to use is Project 64."
 	print "http://www.pj64-emu.com/[/quote]"
 elif sys.argv[2] == "GB":
-	print "Emulation:"
 	print "[quote]The best Emulator to use is Virtual Boy Advanced."
 	print "http://vba.ngemu.com/downloads.shtml[/quote]"
 elif sys.argv[2] == "GBC":
-	print "Emulation:"
 	print "[quote]The best Emulator to use is Virtual Boy Advanced."
 	print "http://vba.ngemu.com/downloads.shtml[/quote]"
 elif sys.argv[2] == "GBA":
-	print "Emulation:"
 	print "[quote]The best Emulator to use is Virtual Boy Advanced."
 	print "http://vba.ngemu.com/downloads.shtml[/quote]"
 elif sys.argv[2] == "GC":
-	print "Emulation:"
 	print "[quote]The best Emulator to use is Dolphin."
 	print "http://www.dolphin-emulator.com/download.html[/quote]"
 elif sys.argv[2] == "WII":
-	print "Emulation:"
 	print "[quote]The best Emulator to use is Dolphin."
 	print "http://www.dolphin-emulator.com/download.html[/quote]"
 elif sys.argv[2] == "DS":
-	print "Emulation:"
 	print "[quote]The best Emulator to use is DSEmu."
 	print "http://dsemu.oopsilon.com/[/quote]"
 elif sys.argv[2] == "DOS":
-	print "Emulation:"
 	print "[quote]The best Emulator to use is DOSBox."
 	print "http://www.dosbox.com/download.php?main=1[/quote]"
+else:
+	print "[quote]No Emulator information[/quote]"
