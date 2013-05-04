@@ -76,7 +76,7 @@ genre = list(gameinfo.find("a", href=re.compile("genre")).stripped_strings)[0]
 # Search for a review link
 review_link = soup.find("a", title="review")
 if review_link:
-    review = "[url]" + review_link.get("href") + "[/url]"
+    review = review_link.get("href")
 else:
     review = "No IGN review found"
 
