@@ -153,7 +153,3 @@ elif sys.argv[2] == "DOS":
 	print "Emulation:"
 	print "[quote]The best Emulator to use is DOSBox."
 	print "http://www.dosbox.com/download.php?main=1[/quote]"
-
-print ""
-print "------------------------------------------------"
-print ""
