@@ -68,10 +68,18 @@ language = sys.argv[4]
 gameinfo = soup.find("div", class_="gameInfo")
 
 # Find the release date tag, jump up to parent and format it
-date = list(gameinfo.find(text=re.compile("Release Date")).parent.parent.stripped_strings)[1].strip(": ")
+release_date_text = gameinfo.find(text=re.compile("Release Date"))
+if release_date_text:
+    date = list(release_date_text.parent.parent.stripped_strings)[1].strip(": ")
+else:
+    date = "No release date found"
 
 # Similarly for genre
-genre = list(gameinfo.find("a", href=re.compile("genre")).stripped_strings)[0]
+genre_text = gameinfo.find("a", href=re.compile("genre"))
+if genre_text:
+    genre = list(genre_text.stripped_strings)[0]
+else:
+    genre = "Not found"
 
 # Search for a review link
 review_link = soup.find("a", title="review")
@@ -94,7 +102,7 @@ print "Description: "
 print "[quote]"
 description_paras = gameinfo.find_all("p")
 for i, para in enumerate(description_paras):
-    if para.text:
+    if para.text and para.text.strip() != "":
         print para.text.strip()
         if i != len(description_paras)-1:
             print ""
