@@ -61,7 +61,12 @@ else:
     if console in the_tag.a.get("href"):
         game_page = the_tag.a.get("href")
     else:
-        game_page = the_tag.parent.find(class_="search-item-sub-title").find("a", href=re.compile(console)).get("href")
+        console_page = the_tag.parent.find(class_="search-item-sub-title").find("a", href=re.compile(console))
+        if console_page:
+            game_page = console_page.get("href")
+        else:
+            print "Error: No game page was found on IGN for '" + game_name + "' on the console with code '" + console + "'. Check that the console is correct (for example, GB vs GBA), and that the code on IGN corresponds to the code you have used."
+            sys.exit()
 
 # Open URL
 soup = BeautifulSoup(requests.get(game_page).text)
