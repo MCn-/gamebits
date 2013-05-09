@@ -5,12 +5,18 @@
 
 from bs4 import BeautifulSoup
 import requests
-import sys, re
+import sys, re, json
 
 # TODO: nicer errors on bad inputs
 # TODO: youtube video functionality
 # TODO: take a list file and run on each element
 # TODO: supply required libraries
+
+def upload_image(url):
+    headers = {"Authorization": "Client-ID d656b9b04c8ff24"}
+    params = {"image": url}
+    r = requests.post("https://api.imgur.com/3/image", headers = headers, params = params)
+    return json.loads(r.content)["data"]["link"]
 
 # Get URL if none supplied
 if "http" in sys.argv[1]:
@@ -88,7 +94,32 @@ if review_link:
 else:
     review = "No IGN review found"
 
+
+# Get + upload large cover image
+ign_style_data = soup.find("div", class_="contentBackground").get("style")
+if ign_style_data:
+    try:
+        ign_image_url = re.search('http://(.+?).jpg', ign_style_data).group(0)
+        imgur_ign_image_url = upload_image(ign_image_url)
+    except AttributeError:
+        # AAA, ZZZ not found in the original string
+        ign_image_url = None # apply your error handling
+        imgur_ign_image_url = None
+else:
+    imgur_ign_image_url = None
+
+# Get box art
+game_box_data = soup.find("img", "highlight-boxArt")
+if game_box_data:
+    # Brittle, quick, dirty image url substitution of expected ___h.jpg with ___w.jpg
+    imgur_game_box_url = upload_image(game_box_data.get("src")[:-5] + "w.jpg")
+else:
+    imgur_game_box_url = None
+
+
 # Print everything
+if imgur_ign_image_url:
+    print "[img]" + imgur_ign_image_url + "[/img]\n"
 print "Game Name: " + game_name
 print "Released: " + date
 print "Source: " + source
@@ -161,3 +192,6 @@ elif sys.argv[2] == "DOS":
 	print "Emulation:"
 	print "[quote]The best Emulator to use is DOSBox."
 	print "http://www.dosbox.com/download.php?main=1[/quote]"
+
+if imgur_game_box_url:
+    print "\n\nCover image: " + imgur_game_box_url
