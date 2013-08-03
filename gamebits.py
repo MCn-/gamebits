@@ -191,7 +191,8 @@ if screenshot_one_url:
     print "[img]{0}[/img]".format(screenshot_one_url)
 if screenshot_two_url:
     print "[img]{0}[/img]".format(screenshot_two_url)
-print "Screenshot gallery: " + screenshot_gallery_url
+if screenshot_one_url:
+    print "Screenshot gallery: " + screenshot_gallery_url
 
 if imgur_game_box_url:
     print "\n\nCover image: " + imgur_game_box_url
