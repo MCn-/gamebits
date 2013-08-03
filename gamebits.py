@@ -100,20 +100,20 @@ else:
     imgur_game_box_url = None
 
 # Print everything
-print "Game Name: " + proper_game_title
-print "Released: " + date
+print "Game Name: " + proper_game_title.encode('utf-8')
+print "Released: " + date.encode('utf-8')
 if source:
-    print "Source: " + source
+    print "Source: " + source.encode('utf-8')
 if language:
-    print "Language: " + language
-print "Game Genre: " + genre + "\n"
+    print "Language: " + language.encode('utf-8')
+print "Game Genre: " + genre.encode('utf-8') + "\n"
 
-print "Review: " + review + "\n"
+print "Review: " + review.encode('utf-8') + "\n"
 
 print "Description: "
 # Print out all the paragraphs for the description
 print "[quote]"
-print description_text
+print description_text.encode('utf-8')
 print "[/quote]"
 print ""
 
