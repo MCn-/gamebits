@@ -11,7 +11,7 @@ Installation
     - If you're not sure how to do this, install setuptools (http://pythonhosted.org/setuptools/easy_install.html#installing-easy-install) and run ``easy_install pip`` on the command line.
     - If you're really struggling, have a look at https://sites.google.com/site/pydatalog/python/pip-for-windows (not used myself, but seems promising)
 - (Optional: use a virtualenv)
-- Once pip is installed, ``cd`` to the directory and run ``pip install -r requirements.txt``. This will download all dependencies automatically.
+- Once pip is installed, ``cd`` to the gamebits/ directory (that you just downloaded from github!) and run ``pip install -r requirements.txt``. This will download all dependencies automatically.
 - Put gamebits.py in a folder somewhere, optionally add it to your path
 
 Usage
