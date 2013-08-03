@@ -5,12 +5,13 @@
 
 from bs4 import BeautifulSoup
 import requests
+import html5lib
 import sys, re, json
 
-# TODO: nicer errors on bad inputs
-# TODO: youtube video functionality
-# TODO: take a list file and run on each element
-# TODO: supply required libraries
+# Codes used in search urls on MobyGames - add more if necessary
+MG_CONSOLE_CODES = {'pc': 3, 'gb': 10, 'gbc': 11, 'gba': 12}
+MG_CONSOLE_SLUGS = {'N64': 'N64', 'GBA': 'gameboy-advance', 'GBC': 'gameboy-color', 'Dreamcast': 'Dreamcast', 'gamecube': 'gamecube', 'Xbox': 'xbox', 'xbox360': 'xbox360', 'Wii U': 'Wii-u', 'Ps2': 'PS2', 'PS3': 'Ps3','Ps1': 'Playstation', 'genesis': 'genesis', 'android': 'android', 'PC': 'windows', 'nes': 'nes', '3ds': '3ds', 'DS': 'nintendo-ds', 'DSI': 'nintendo-dsi', 'snes': 'snes', 'iphone': 'iphone', 'wii': 'wii', 'mac':'macintosh', 'gameboy': 'gameboy'}
+
 
 def upload_image(url):
     headers = {"Authorization": "Client-ID d656b9b04c8ff24"}
@@ -24,127 +25,95 @@ if "http" in sys.argv[1]:
     game_name = ""
 else:
     game_name = sys.argv[1]
-
+    
     # Remove spaces and lowercase console name
     console = '-'.join(sys.argv[2].split()).lower()
 
-    # Search IGN for games
-    search_url = "http://ign.com/search?q=" + sys.argv[1] + "&page=0&count=10&type=object&objectType=game&filter=games"
-    search_soup = BeautifulSoup(requests.get(search_url).text)
+    url_friendly_gn = ''.join(e for e in game_name.lower() if e.isalnum() or e == ' ').replace(' ', '-')
 
-    # Find the page for the game
-    search_items = search_soup.find_all("div", class_="search-item-title")
-
-    the_tag = None
-    found_names = []
-    for item in search_items:
-        if item.a and item.a.em:
-            item.a.em.unwrap()
-
-        found_names.append(item.a.text.strip());
-        if sys.argv[1] == item.a.text.strip():
-            the_tag = item
-
-    if not the_tag:
-        print "Error: No game by the name " + sys.argv[1] + " was found in the IGN search results: either try adjusting the name or use the direct URL instead.\n"
-        print "The following games were found on the search results page: "
-        for name in found_names:
-            print " - " + name
-        sys.exit()
-
-    for item in search_items:
-        if item.a and item.a.em:
-            item.a.em.unwrap()
-        if sys.argv[1] == item.a.text.strip():
-            the_tag = item
-
-    if console in the_tag.a.get("href"):
-        game_page = the_tag.a.get("href")
+    # Try naive search with console
+    if console in MG_CONSOLE_SLUGS:
+        console_slug = format(MG_CONSOLE_SLUGS['console'])
     else:
-        console_page = the_tag.parent.find(class_="search-item-sub-title").find("a", href=re.compile(console))
-        if console_page:
-            game_page = console_page.get("href")
-        else:
-            print "Error: No game page was found on IGN for '" + game_name + "' on the console with code '" + console + "'. Check that the console is correct (for example, GB vs GBA), and that the code on IGN corresponds to the code you have used."
-            sys.exit()
+        console_slug = console
+    game_page = 'https://www.mobygames.com/game/{0}/{1}'.format(console_slug, url_friendly_gn)
+    naive_soup = BeautifulSoup(requests.get(game_page).text.encode('utf-8'), 'html5lib')
+    
+    if not naive_soup.find('h1', class_='gameHeader'):
+        # Try naive search without console
+        game_page = 'https://www.mobygames.com/game/{0}'.format(url_friendly_gn)
+        naive_soup = BeautifulSoup(requests.get(game_page).text.encode('utf-8'), 'html5lib')
+        
+        if not naive_soup.find('h1', class_='gameHeader'):
+            # NEED TO SEARCH :(
+            if console in MG_CONSOLE_CODES:
+                console_code = MG_CONSOLE_CODES[console]
+            else:
+                console_code = -1        
 
-# Open URL
-soup = BeautifulSoup(requests.get(game_page).text)
+            # Search MobyGames for games
+            search_url = 'https://www.mobygames.com/search/quick?q={0}&p={1}&search=Go&sFilter=1&sG=on'.format(game_name, console_code)
+            search_soup = BeautifulSoup(requests.get(search_url).text)
+
+            # # Find the page for the game
+            game_page = search_soup.find("div", class_="searchResult").a.get('href')
+
+# Open URL, need html5lib since default parser breaks on mobygames
+soup = BeautifulSoup(requests.get(game_page).text, "html5lib")
 
 # Source and language args
-source = sys.argv[3]
-language = sys.argv[4]
+try:
+    source = sys.argv[3]
+except:
+    source = None
 
-# Get the gameinfo div, useful for several bits of data
-gameinfo = soup.find("div", class_="gameInfo")
+try:
+    language = sys.argv[4]
+except:
+    language = None
 
-# Find the release date tag, jump up to parent and format it
-release_date_text = gameinfo.find(text=re.compile("Release Date"))
-if release_date_text:
-    date = list(release_date_text.parent.parent.stripped_strings)[1].strip(": ")
-else:
-    date = "No release date found"
+proper_game_title = soup.find('div', id='gameTitle').get_text()
 
-# Similarly for genre
-genre_text = gameinfo.find("a", href=re.compile("genre"))
-if genre_text:
-    genre = list(genre_text.stripped_strings)[0]
-else:
-    genre = "Not found"
+game_release_div = soup.find('div', id='coreGameRelease')
+date = game_release_div.find('div', text='Released').next_sibling.get_text()
 
-# Search for a review link
-review_link = soup.find("a", title="review")
-if review_link:
-    review = review_link.get("href")
-else:
-    review = "No IGN review found"
+game_genre_div = soup.find('div', id='coreGameGenre')
+genre = game_genre_div.find('div', text='Genre').next_sibling.get_text()
 
+review = game_page + '/mobyrank'
 
-# Get + upload large cover image
-ign_style_data = soup.find("div", class_="contentBackground").get("style")
-if ign_style_data:
-    try:
-        ign_image_url = re.search('http://(.+?).jpg', ign_style_data).group(0)
-        imgur_ign_image_url = upload_image(ign_image_url)
-    except AttributeError:
-        # AAA, ZZZ not found in the original string
-        ign_image_url = None # apply your error handling
-        imgur_ign_image_url = None
-else:
-    imgur_ign_image_url = None
+description_div = soup.find('div', class_='rightPanelMain')
+for br in description_div.findAll('br'):
+    br.replace_with('\n')
+string = description_div.get_text().encode('utf-8')
+description_text = string[len('Description'):string.find('[edit description')]
 
 # Get box art
-game_box_data = soup.find("img", "highlight-boxArt")
+game_box_data = soup.find("div", id="coreGameCover").img
 if game_box_data:
-    # Brittle, quick, dirty image url substitution of expected ___h.jpg with ___w.jpg
-    imgur_game_box_url = upload_image(game_box_data.get("src")[:-5] + "w.jpg")
+    img_url = game_box_data.get("src").encode('utf-8')
+    # Check for weird url bug where sometimes the image would have two http://
+    if '/http://' in img_url:
+        img_url = img_url[len('https://www.mobygames.com/'):]
+    imgur_game_box_url = upload_image(img_url)
 else:
     imgur_game_box_url = None
 
-
 # Print everything
-if imgur_ign_image_url:
-    print "[img]" + imgur_ign_image_url + "[/img]\n"
-print "Game Name: " + game_name
+print "Game Name: " + proper_game_title
 print "Released: " + date
-print "Source: " + source
-print "Language: " + language
+if source:
+    print "Source: " + source
+if language:
+    print "Language: " + language
 print "Game Genre: " + genre + "\n"
 
-print "IGN Review: " + review + "\n"
+print "Review: " + review + "\n"
 
 print "Description: "
 # Print out all the paragraphs for the description
 print "[quote]"
-description_paras = gameinfo.find_all("p")
-for i, para in enumerate(description_paras):
-    if para.text and para.text.strip() != "":
-        print para.text.strip()
-        if i != len(description_paras)-1:
-            print ""
-    else:
-        print "No description available"
-        break
+print description_text
 print "[/quote]"
 print ""
 
