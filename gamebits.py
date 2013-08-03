@@ -14,7 +14,7 @@ MG_CONSOLE_SLUGS = {'N64': 'N64', 'GBA': 'gameboy-advance', 'GBC': 'gameboy-colo
 
 
 def upload_image(url):
-    try:        
+    try:
         # dealing with pesky relative url
         if not 'http://' in url:
             url = 'https://www.mobygames.com/' + url
@@ -36,7 +36,7 @@ if "http" in sys.argv[1]:
     game_name = ""
 else:
     game_name = sys.argv[1]
-    
+
     # Remove spaces and lowercase console name
     console = '-'.join(sys.argv[2].split()).lower()
 
@@ -49,18 +49,18 @@ else:
         console_slug = console
     game_page = 'https://www.mobygames.com/game/{0}/{1}'.format(console_slug, url_friendly_gn)
     naive_soup = BeautifulSoup(requests.get(game_page).text.encode('utf-8'), 'html5lib')
-    
+
     if not naive_soup.find('h1', class_='gameHeader'):
         # Try naive search without console
         game_page = 'https://www.mobygames.com/game/{0}'.format(url_friendly_gn)
         naive_soup = BeautifulSoup(requests.get(game_page).text.encode('utf-8'), 'html5lib')
-        
+
         if not naive_soup.find('h1', class_='gameHeader'):
             # NEED TO SEARCH :(
             if console in MG_CONSOLE_CODES:
                 console_code = MG_CONSOLE_CODES[console]
             else:
-                console_code = -1        
+                console_code = -1
 
             # Search MobyGames for games
             search_url = 'https://www.mobygames.com/search/quick?q={0}&p={1}&search=Go&sFilter=1&sG=on'.format(game_name, console_code)
@@ -127,10 +127,9 @@ if language:
     print "Language: " + language.encode('utf-8')
 print "Game Genre: " + genre.encode('utf-8') + "\n"
 
-print "Review: " + review.encode('utf-8') + "\n"
+print "[b]Review:[/b] " + review.encode('utf-8') + "\n"
 
-print "Description: "
-# Print out all the paragraphs for the description
+print "[b]Description:[/b] "
 print "[quote]"
 print description_text
 print "[/quote]"
@@ -138,56 +137,56 @@ print ""
 
 # Emulator Suggestion
 if sys.argv[2] == "PS1":
-    print "Emulation:"
+    print "[b]Emulation:[/b]"
     print "[quote]The best Emulator to use is EPSXE."
     print "http://www.epsxe.com/download.php[/quote]"
 elif sys.argv[2] == "PS2":
-    print "Emulation:"
+    print "[b]Emulation:[/b]"
     print "[quote]The best Emulator to use is PCSX2."
     print "http://pcsx2.net/download.html[/quote]"
 elif sys.argv[2] == "NES":
-    print "Emulation:"
+    print "[b]Emulation:[/b]"
     print "[quote]The best Emulator to use is FCEUX."
     print "http://www.fceux.com/web/home.html[/quote]"
 elif sys.argv[2] == "SNES":
-    print "Emulation:"
+    print "[b]Emulation:[/b]"
     print "[quote]The best Emulator to use is ZSNES."
     print "http://www.zsnes.com/index.php?page=files[/quote]"
 elif sys.argv[2] == "N64":
-    print "Emulation:"
+    print "[b]Emulation:[/b]"
     print "[quote]The best Emulator to use is Project 64."
     print "http://www.pj64-emu.com/[/quote]"
 elif sys.argv[2] == "GB":
-    print "Emulation:"
+    print "[b]Emulation:[/b]"
     print "[quote]The best Emulator to use is Virtual Boy Advanced."
     print "http://vba.ngemu.com/downloads.shtml[/quote]"
 elif sys.argv[2] == "GBC":
-    print "Emulation:"
+    print "[b]Emulation:[/b]"
     print "[quote]The best Emulator to use is Virtual Boy Advanced."
     print "http://vba.ngemu.com/downloads.shtml[/quote]"
 elif sys.argv[2] == "GBA":
-    print "Emulation:"
+    print "[b]Emulation:[/b]"
     print "[quote]The best Emulator to use is Virtual Boy Advanced."
     print "http://vba.ngemu.com/downloads.shtml[/quote]"
 elif sys.argv[2] == "GC":
-    print "Emulation:"
+    print "[b]Emulation:[/b]"
     print "[quote]The best Emulator to use is Dolphin."
     print "http://www.dolphin-emulator.com/download.html[/quote]"
 elif sys.argv[2] == "WII":
-    print "Emulation:"
+    print "[b]Emulation:[/b]"
     print "[quote]The best Emulator to use is Dolphin."
     print "http://www.dolphin-emulator.com/download.html[/quote]"
 elif sys.argv[2] == "DS":
-    print "Emulation:"
+    print "[b]Emulation:[/b]"
     print "[quote]The best Emulator to use is DSEmu."
     print "http://dsemu.oopsilon.com/[/quote]"
 elif sys.argv[2] == "DOS":
-    print "Emulation:"
+    print "[b]Emulation:[/b]"
     print "[quote]The best Emulator to use is DOSBox."
     print "http://www.dosbox.com/download.php?main=1[/quote]"
 
 if screenshot_one_url:
-    print "Screenshots:\n"
+    print "\n[b]Screenshots:[/b]\n"
     print "[img]{0}[/img]".format(screenshot_one_url)
 if screenshot_two_url:
     print "[img]{0}[/img]".format(screenshot_two_url)
@@ -196,3 +195,5 @@ if screenshot_one_url:
 
 if imgur_game_box_url:
     print "\n\nCover image: " + imgur_game_box_url
+
+print "\n-------------------------------------------------\n"
