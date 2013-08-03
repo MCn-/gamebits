@@ -6,7 +6,7 @@ Fetch game info from the internet. There will be lots of bugs, please submit any
 Installation
 ============
 
-- Download the files from https://github.com/MCn-/gamebits/archive/mobygames.zip
+- Download the files from https://github.com/MCn-/gamebits/archive/mGameBits.zip
 - Install pip: http://www.pip-installer.org/en/latest/installing.html
     - If you're not sure how to do this, install setuptools (http://pythonhosted.org/setuptools/easy_install.html#installing-easy-install) and run ``easy_install pip`` on the command line.
     - If you're really struggling, have a look at https://sites.google.com/site/pydatalog/python/pip-for-windows (not used myself, but seems promising)
