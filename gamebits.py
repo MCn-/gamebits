@@ -14,10 +14,15 @@ MG_CONSOLE_SLUGS = {'N64': 'N64', 'GBA': 'gameboy-advance', 'GBC': 'gameboy-colo
 
 
 def upload_image(url):
-    try:
+    try:        
+        # dealing with pesky relative url
         if not 'http://' in url:
-            # dealing with pesky relative url
             url = 'https://www.mobygames.com/' + url
+        # Check for weird url bug where sometimes the image would have two http://
+        if '/https://' or '/http://' in url:
+            url = url[len('https://www.mobygames.com/'):]
+        # Remove double slashes
+        url = url.replace('com//', 'com/')
         headers = {"Authorization": "Client-ID d656b9b04c8ff24"}
         params = {"image": url}
         r = requests.post("https://api.imgur.com/3/image", headers = headers, params = params)
@@ -99,9 +104,6 @@ description_text = string[len('Description'):string.find('[edit description')]
 game_box_data = soup.find("div", id="coreGameCover").img
 if game_box_data:
     img_url = game_box_data.get("src").encode('utf-8').replace('small', 'large')
-    # Check for weird url bug where sometimes the image would have two http://
-    if '/http://' in img_url:
-        img_url = img_url[len('https://www.mobygames.com/'):]
     imgur_game_box_url = upload_image(img_url)
 else:
     imgur_game_box_url = None
@@ -110,8 +112,11 @@ else:
 screenshot_gallery_url = game_page + '/screenshots'
 screenshot_soup = BeautifulSoup(requests.get(screenshot_gallery_url).text, "html5lib")
 screenshot_images = screenshot_soup.find('div', class_='rightPanelMain').findAll('img')
-screenshot_one_url = upload_image(screenshot_images[0].get('src').replace('/s/', '/l/'))
-screenshot_two_url = upload_image(screenshot_images[1].get('src').replace('/s/', '/l/'))
+screenshot_one_url, screenshot_two_url = None, None
+if len(screenshot_images) > 0:
+    screenshot_one_url = upload_image(screenshot_images[0].get('src').replace('/s/', '/l/'))
+if len(screenshot_images) > 1:
+    screenshot_two_url = upload_image(screenshot_images[1].get('src').replace('/s/', '/l/'))
 
 # Print everything
 print "Game Name: " + proper_game_title.encode('utf-8')
@@ -181,9 +186,11 @@ elif sys.argv[2] == "DOS":
     print "[quote]The best Emulator to use is DOSBox."
     print "http://www.dosbox.com/download.php?main=1[/quote]"
 
-print "Screenshots:\n"
-print "[img]{0}[/img]".format(screenshot_one_url)
-print "[img]{0}[/img]".format(screenshot_two_url)
+if screenshot_one_url:
+    print "Screenshots:\n"
+    print "[img]{0}[/img]".format(screenshot_one_url)
+if screenshot_two_url:
+    print "[img]{0}[/img]".format(screenshot_two_url)
 print "Screenshot gallery: " + screenshot_gallery_url
 
 if imgur_game_box_url:
