@@ -113,7 +113,7 @@ print "Review: " + review.encode('utf-8') + "\n"
 print "Description: "
 # Print out all the paragraphs for the description
 print "[quote]"
-print description_text.encode('utf-8')
+print description_text
 print "[/quote]"
 print ""
 
