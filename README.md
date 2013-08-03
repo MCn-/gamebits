@@ -7,18 +7,22 @@ Installation
 ============
 
 - Download the files from https://github.com/MCn-/gamebits/archive/master.zip
-- Put this in a folder somewhere, optionally add it to your path
+- Install pip: http://www.pip-installer.org/en/latest/installing.html
+    - If you're not sure how to do this, install setuptools (http://pythonhosted.org/setuptools/easy_install.html#installing-easy-install) and run ``easy_install pip`` on the command line.
+- (Optional: use a virtualenv)
+- Once pip is installed, ``cd`` to the directory and run ``pip install -r requirements.txt``. This will download all dependencies automatically.
+- Put gamebits.py in a folder somewhere, optionally add it to your path
 
 Usage
 ========
 
-You can run the script by supplying either a URL to an IGN game page or simply the game name.
+You can run the script by supplying either a URL to a MobyGames game page or simply the game name.
 
     ./gamebits.py <GAME NAME> <CONSOLE> <SOURCE> <LANGUAGE>
 
 or
 
-    ./gamebits.py <IGN URL> <CONSOLE> <SOURCE> <LANGUAGE>
+    ./gamebits.py <MG URL> <CONSOLE> <SOURCE> <LANGUAGE>
     
-Note: CONSOLE should be equal to the one used on IGN, which usually will be fairly similar to what you would expect, but in some cases may be different. For example, the Nintendo 64 has an id of n64, and the Gamecube has an id of gc.
+Note: CONSOLE should be equal to the one used on MG, which usually will be fairly similar to what you would expect, but in some cases may be different. For example, the Nintendo 64 has an id of n64. I recommend just trying it and seeing what happens: it will probably work in 99% of cases without much thought.
     
