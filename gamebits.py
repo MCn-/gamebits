@@ -92,7 +92,7 @@ description_text = string[len('Description'):string.find('[edit description')]
 # Get box art
 game_box_data = soup.find("div", id="coreGameCover").img
 if game_box_data:
-    img_url = game_box_data.get("src").encode('utf-8')
+    img_url = game_box_data.get("src").encode('utf-8').replace('small', 'large')
     # Check for weird url bug where sometimes the image would have two http://
     if '/http://' in img_url:
         img_url = img_url[len('https://www.mobygames.com/'):]
