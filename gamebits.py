@@ -78,7 +78,8 @@ game_release_div = soup.find('div', id='coreGameRelease')
 date = game_release_div.find('div', text='Released').next_sibling.get_text()
 
 game_genre_div = soup.find('div', id='coreGameGenre')
-genre = game_genre_div.find('div', text='Genre').next_sibling.get_text()
+# NOTE: u'\xa0' is &nbsp; - remove it
+genre = game_genre_div.find('div', text='Genre').next_sibling.get_text().replace(u'\xa0', '')
 
 review = game_page + '/mobyrank'
 
