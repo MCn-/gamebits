@@ -132,7 +132,7 @@ print "[/quote]"
 print ""
 
 # Emulator Suggestion
-if sys.argv[2] == "PS":
+if sys.argv[2] == "PS1":
     print "Emulation:"
     print "[quote]The best Emulator to use is EPSXE."
     print "http://www.epsxe.com/download.php[/quote]"
