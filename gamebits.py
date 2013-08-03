@@ -14,10 +14,16 @@ MG_CONSOLE_SLUGS = {'N64': 'N64', 'GBA': 'gameboy-advance', 'GBC': 'gameboy-colo
 
 
 def upload_image(url):
-    headers = {"Authorization": "Client-ID d656b9b04c8ff24"}
-    params = {"image": url}
-    r = requests.post("https://api.imgur.com/3/image", headers = headers, params = params)
-    return json.loads(r.content)["data"]["link"]
+    try:
+        if not 'http://' in url:
+            # dealing with pesky relative url
+            url = 'https://www.mobygames.com/' + url
+        headers = {"Authorization": "Client-ID d656b9b04c8ff24"}
+        params = {"image": url}
+        r = requests.post("https://api.imgur.com/3/image", headers = headers, params = params)
+        return json.loads(r.content)["data"]["link"]
+    except:
+        return ''
 
 # Get URL if none supplied
 if "http" in sys.argv[1]:
@@ -100,6 +106,13 @@ if game_box_data:
 else:
     imgur_game_box_url = None
 
+# Get screenshots
+screenshot_gallery_url = game_page + '/screenshots'
+screenshot_soup = BeautifulSoup(requests.get(screenshot_gallery_url).text, "html5lib")
+screenshot_images = screenshot_soup.find('div', class_='rightPanelMain').findAll('img')
+screenshot_one_url = upload_image(screenshot_images[0].get('src').replace('/s/', '/l/'))
+screenshot_two_url = upload_image(screenshot_images[1].get('src').replace('/s/', '/l/'))
+
 # Print everything
 print "Game Name: " + proper_game_title.encode('utf-8')
 print "Released: " + date.encode('utf-8')
@@ -167,6 +180,11 @@ elif sys.argv[2] == "DOS":
     print "Emulation:"
     print "[quote]The best Emulator to use is DOSBox."
     print "http://www.dosbox.com/download.php?main=1[/quote]"
+
+print "Screenshots:\n"
+print "[img]{0}[/img]".format(screenshot_one_url)
+print "[img]{0}[/img]".format(screenshot_two_url)
+print "Screenshot gallery: " + screenshot_gallery_url
 
 if imgur_game_box_url:
     print "\n\nCover image: " + imgur_game_box_url
