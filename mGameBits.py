@@ -6,14 +6,15 @@
 
 from pyquery import PyQuery as pq
 import argparse
+import json
+import re
 import requests
 import sys
-import re
-import json
+
 
 # Codes used in search urls on MobyGames - add more if necessary
-MG_CONSOLE_CODES = {'pc': 3, 'gb': 10, 'gbc': 11, 'gba': 12}
-MG_CONSOLE_SLUGS = {'N64': 'N64', 'GBA': 'gameboy-advance', 'GBC': 'gameboy-color', 'Dreamcast': 'Dreamcast', 'gamecube': 'gamecube', 'Xbox': 'xbox', 'xbox360': 'xbox360', 'Wii U': 'Wii-u', 'Ps2': 'PS2', 'PS3': 'Ps3','Ps1': 'Playstation', 'genesis': 'genesis', 'android': 'android', 'PC': 'windows', 'nes': 'nes', '3ds': '3ds', 'DS': 'nintendo-ds', 'DSI': 'nintendo-dsi', 'snes': 'snes', 'iphone': 'iphone', 'wii': 'wii', 'mac':'macintosh', 'gameboy': 'gameboy'}
+# MG_CONSOLE_CODES = {'pc': 3, 'gb': 10, 'gbc': 11, 'gba': 12}
+# MG_CONSOLE_SLUGS = {'N64': 'N64', 'GBA': 'gameboy-advance', 'GBC': 'gameboy-color', 'Dreamcast': 'Dreamcast', 'gamecube': 'gamecube', 'Xbox': 'xbox', 'xbox360': 'xbox360', 'Wii U': 'Wii-u', 'Ps2': 'PS2', 'PS3': 'Ps3','Ps1': 'Playstation', 'genesis': 'genesis', 'android': 'android', 'PC': 'windows', 'nes': 'nes', '3ds': '3ds', 'DS': 'nintendo-ds', 'DSI': 'nintendo-dsi', 'snes': 'snes', 'iphone': 'iphone', 'wii': 'wii', 'mac':'macintosh', 'gameboy': 'gameboy'}
 
 
 def upload_image(url):
@@ -34,48 +35,6 @@ def upload_image(url):
         return ''
 
 
-# def get_game_page():
-#     if "http" in sys.argv[1]:
-#         return sys.argv[1]
-#         # game_name = ""
-#     else:
-#         print 'Search is currently not enabled, it needs to be fixed. Try passing in a URL.'
-#         return None
-        # game_name = sys.argv[1]
-
-        # # Remove spaces and lowercase console name
-        # console = '-'.join(args.console.split()).lower()
-
-        # url_friendly_gn = ''.join(e for e in game_name.lower() if e.isalnum() or e == ' ').replace(' ', '-')
-
-        # # Try naive search with console
-        # if console in MG_CONSOLE_SLUGS:
-        #     console_slug = format(MG_CONSOLE_SLUGS['console'])
-        # else:
-        #     console_slug = console
-        # game_page = 'https://www.mobygames.com/game/{0}/{1}'.format(console_slug, url_friendly_gn)
-        # naive_soup = BeautifulSoup(requests.get(game_page).text, 'html5lib')
-
-        # if not naive_soup.find('h1', class_='gameHeader'):
-        #     # Try naive search without console
-        #     game_page = 'https://www.mobygames.com/game/{0}'.format(url_friendly_gn)
-        #     naive_soup = BeautifulSoup(requests.get(game_page).text.encode('utf-8'), 'html5lib')
-
-        #     if not naive_soup.find('h1', class_='gameHeader'):
-        #         # NEED TO SEARCH :(
-        #         if console in MG_CONSOLE_CODES:
-        #             console_code = MG_CONSOLE_CODES[console]
-        #         else:
-        #             console_code = -1
-
-        #         # Search MobyGames for games
-        #         search_url = 'https://www.mobygames.com/search/quick?q={0}&p={1}&search=Go&sFilter=1&sG=on'.format(game_name, console_code)
-        #         search_soup = BeautifulSoup(requests.get(search_url).text)
-
-        #         # # Find the page for the game
-        #         game_page = search_soup.find("div", class_="searchResult").a.get('href')
-
-
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("url", help="url of a mobygames game page")
@@ -91,21 +50,6 @@ def main():
         return
 
     page = pq(url=game_page).make_links_absolute()
-
-    # display_strings = {
-    #     'source':
-    # }
-
-    # # Source and language args
-    # try:
-    #     source = sys.argv[3]
-    # except:
-    #     source = None
-
-    # try:
-    #     language = sys.argv[4]
-    # except:
-    #     language = None
 
     proper_game_title = page('.niceHeaderTitle a').eq(0).text()
 
