@@ -15,6 +15,8 @@ Installation
 Usage
 ========
 
+**This may not be accurate. Run mGameBits -h to see the required arguments.**
+
 You can run the script by supplying either a URL to a MobyGames game page or simply the game name.
 
     ./mGameBits.py <GAME NAME> <CONSOLE> <SOURCE> <LANGUAGE>
